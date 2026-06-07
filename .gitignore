@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# .NET backend build artifacts
+backend/bin/
+backend/obj/
+
+# Local env files
+.env.local
+.env.*.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

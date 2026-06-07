@@ -1,0 +1,175 @@
+export const t = {
+  navbar: {
+    about:      { es: "Sobre mí",    en: "About" },
+    demo:       { es: "Demo",        en: "Demo" },
+    skills:     { es: "Skills",      en: "Skills" },
+    projects:   { es: "Proyectos",   en: "Projects" },
+    experience: { es: "Experiencia", en: "Experience" },
+    contact:    { es: "Contacto",    en: "Contact" },
+  },
+  hero: {
+    badge: {
+      es: "Disponible · Relación de dependencia o Freelance",
+      en: "Available · Full-time or Freelance",
+    },
+    subtitle: {
+      es: "Desarrolladora Backend / Fullstack",
+      en: "Backend / Fullstack Developer",
+    },
+    description: {
+      es: "Córdoba, Argentina · Orientada a backend, con visión fullstack.",
+      en: "Córdoba, Argentina · Backend-focused, with a fullstack vision.",
+    },
+    btnProjects: { es: "Ver Proyectos",  en: "View Projects" },
+    btnCV:       { es: "Descargar CV",   en: "Download CV" },
+    emailCopied: { es: "¡Correo copiado!", en: "Email copied!" },
+  },
+  about: {
+    title: { es: "Sobre mí", en: "About me" },
+    p1: {
+      es: "Soy desarrolladora autodidacta con foco en backend, aunque con capacidad y experiencia en frontend también. A lo largo de los últimos años aprendí de forma independiente tecnologías como <strong>C#, .NET Core, PHP, Laravel, React y Docker</strong>, profundizando en conceptos como programación orientada a objetos, patrones de diseño, arquitectura de microservicios y comunicación por eventos.",
+      en: "I'm a self-taught developer focused on backend, with frontend skills as well. Over the past few years I independently learned technologies like <strong>C#, .NET Core, PHP, Laravel, React, and Docker</strong>, deepening my understanding of object-oriented programming, design patterns, microservices architecture, and event-driven communication.",
+    },
+    p2: {
+      es: "Actualmente estoy desarrollando un <strong>sistema de trading modular</strong> con ASP.NET Core, RabbitMQ, PostgreSQL y Docker — un proyecto personal que me permitió aplicar arquitectura distribuida en un contexto real y complejo.",
+      en: "I'm currently developing a <strong>modular trading system</strong> with ASP.NET Core, RabbitMQ, PostgreSQL, and Docker — a personal project that allowed me to apply distributed architecture in a real and complex context.",
+    },
+    p3: {
+      es: "No tengo experiencia laboral formal en IT todavía, pero sí tengo código, criterio técnico y muchas ganas de trabajar en equipo. Estoy abierta tanto a <strong>relación de dependencia</strong> como a <strong>proyectos freelance</strong>, presencial o remoto desde Córdoba, Argentina.",
+      en: "I don't have formal IT work experience yet, but I do have real code, technical judgment, and a strong drive to work in a team. I'm open to both <strong>full-time employment</strong> and <strong>freelance projects</strong>, on-site or remote from Córdoba, Argentina.",
+    },
+  },
+  skills: {
+    title: { es: "🛠️ Formación Técnico-Académica",    en: "🛠️ Technical & Academic Background" },
+    desc:  {
+      es: "Tecnologías de mi stack, idiomas y validaciones de trayectos de estudio.",
+      en: "My tech stack, languages, and verified study credentials.",
+    },
+    certsTitle: { es: "📜 Certificaciones e Hitos",    en: "📜 Certifications & Milestones" },
+    certsDesc:  {
+      es: "Credenciales oficiales y validaciones verificables en mi perfil de LinkedIn.",
+      en: "Official credentials and verifiable validations on my LinkedIn profile.",
+    },
+  },
+  projects: {
+    title:    { es: "Proyectos",          en: "Projects" },
+    featured: { es: "★ Destacado",        en: "★ Featured" },
+    github:   { es: "Ver en GitHub →",    en: "View on GitHub →" },
+  },
+  experience: {
+    title: { es: "💼 Experiencia y Trayectoria",  en: "💼 Experience & Background" },
+    desc:  {
+      es: "Proyectos técnicos independientes y trayectoria laboral que forjaron tanto mis habilidades técnicas como interpersonales.",
+      en: "Independent technical projects and work history that shaped both my technical and interpersonal skills.",
+    },
+    skillsLabel: { es: "Habilidades clave:", en: "Key skills:" },
+  },
+  contact: {
+    title: { es: "Contacto", en: "Contact" },
+    desc:  {
+      es: "¿Tenés una propuesta o querés ponerte en contacto? ¡Escribime!",
+      en: "Have a proposal or want to get in touch? Reach out!",
+    },
+    emailCopied: { es: "¡Copiado al portapapeles!", en: "Copied to clipboard!" },
+  },
+  footer: {
+    tagline:   { es: "Desarrolladora Backend / Fullstack · Córdoba, Argentina", en: "Backend / Fullstack Developer · Córdoba, Argentina" },
+    builtWith: { es: "Construido con", en: "Built with" },
+    copyright: { es: `© ${new Date().getFullYear()} Constanza Carnet`, en: `© ${new Date().getFullYear()} Constanza Carnet` },
+    backToTop: { es: "Volver arriba", en: "Back to top" },
+  },
+  finance: {
+    dashboardTitle:    { es: "Demo en Vivo · Terminal Financiera", en: "Live Demo · Financial Terminal" },
+    dashboardSubtitle: {
+      es: "Más que enumerar mis habilidades, prefiero mostrarlas en acción. Esta es una aplicación funcional que desarrollé integrando APIs financieras en tiempo real: explorá cotizaciones de acciones, criptomonedas y el mercado cambiario argentino.",
+      en: "Rather than just listing my skills, I'd rather show them in action. This is a working app I built around real-time financial APIs: explore live equity, crypto, and Argentine FX rates.",
+    },
+    tabConverter:  { es: "💵 Calculadora Cambiaria (ARS / USD)", en: "💵 Currency Calculator (ARS / USD)" },
+    tabMarket:     { es: "📈 Analizador Multimercado",            en: "📈 Multi-Market Analyzer" },
+    tabIndicators: { es: "Indicadores Argentina",            en: "Argentina Indicators" },
+
+    // CurrencyConverter
+    converterLoading:  { es: "🔄 Cargando cotizaciones oficiales y financieras...", en: "🔄 Loading official exchange rates..." },
+    converterTitle:    { es: "💵 Calculadora Cambiaria Bancaria y Financiera (ARS / USD)", en: "💵 Banking & Financial Currency Calculator (ARS / USD)" },
+    converterSubtitle: {
+      es: "Simulación basada en los cierres de pizarras formales y mercados electrónicos regulados.",
+      en: "Simulation based on formal board closings and regulated electronic markets.",
+    },
+    buy:            { es: "Compra",            en: "Buy" },
+    sell:           { es: "Venta",             en: "Sell" },
+    amountLabel:       { es: "Monto a cambiar:",              en: "Amount to exchange:" },
+    amountPlaceholder: { es: "Ingresá el monto a convertir", en: "Enter amount to convert" },
+    operationLabel: { es: "Operación a realizar:", en: "Operation:" },
+    optUsdToArs:    { es: "Tengo Dólares ➔ Quiero Pesos (Tasa Compra)",  en: "I have Dollars ➔ I want Pesos (Buy Rate)" },
+    optArsToUsd:    { es: "Tengo Pesos ➔ Quiero Dólares (Tasa Venta)", en: "I have Pesos ➔ I want Dollars (Sell Rate)" },
+    estimatedTotal: { es: "Monto Final Estimado", en: "Estimated Final Amount" },
+    rate:           { es: "Tasa:",   en: "Rate:" },
+    updated:        { es: "Act:",    en: "Upd:" },
+
+    // MarketDemo
+    quickMonitor:   { es: "Monitor Rápido",      en: "Quick Monitor" },
+    cryptos:        { es: "Criptomonedas:",       en: "Cryptocurrencies:" },
+    stocks:         { es: "Acciones EE.UU:",      en: "US Stocks:" },
+    refreshing:     { es: "Actualizando...",      en: "Updating..." },
+    refresh:        { es: "Actualizar Precios",   en: "Refresh Prices" },
+    colSource:      { es: "Origen",               en: "Source" },
+    colSymbol:      { es: "Símbolo",              en: "Symbol" },
+    colName:        { es: "Nombre",               en: "Name" },
+    colPrice:       { es: "Precio Act.",          en: "Curr. Price" },
+    colChange:      { es: "Var. Diaria",          en: "Daily Change" },
+    colTrend:       { es: "Tendencia",            en: "Trend" },
+    colVolatility:  { es: "Volatilidad",          en: "Volatility" },
+    colRisk:        { es: "Alerta de Riesgo",     en: "Risk Alert" },
+    riskFootnote:   {
+      es: "* Alerta de Riesgo: volatilidad calculada sobre el rango de precios en las últimas 24 h — Normal (baja oscilación) · Moderada · Alta (riesgo de movimiento brusco).",
+      en: "* Risk Alert: volatility based on the 24h price range — Normal (low swing) · Moderate · High (risk of sharp price movement).",
+    },
+    colAction:      { es: "Acción",               en: "Action" },
+    badgeStock:     { es: "Bolsa",                en: "Stock" },
+    badgeCrypto:    { es: "Cripto",               en: "Crypto" },
+    generalAsset:   { es: "Activo General",       en: "General Asset" },
+    emptyTable:     {
+      es: "No hay activos en tu lista de seguimiento. Activá los monitores rápidos de arriba.",
+      en: "No assets in your watchlist. Activate the quick monitors above.",
+    },
+    alertHigh:     { es: "Alta Volatilidad", en: "High Volatility" },
+    alertModerate: { es: "Moderada",         en: "Moderate" },
+    alertNormal:   { es: "Normal",           en: "Normal" },
+    errLoad:       { es: "Error al precargar los activos de los mercados.", en: "Error loading market assets." },
+    errSync:       { es: "Error al sincronizar los precios en tiempo real.", en: "Error syncing real-time prices." },
+    errNoMatch:    { es: (q) => `No se encontraron coincidencias exactas para "${q}".`, en: (q) => `No exact matches found for "${q}".` },
+    errDuplicate:  { es: (n) => `${n} ya se encuentra en tu monitor.`,       en: (n) => `${n} is already in your watchlist.` },
+    errNetwork:    { es: (n) => `Error de red o CORS al consultar la cotización de ${n}.`, en: (n) => `Network or CORS error fetching quote for ${n}.` },
+    marketLoading: { es: "🔄 Cargando datos de mercado...", en: "🔄 Loading market data..." },
+    unavailable:   { es: "Datos no disponibles temporalmente.", en: "Data temporarily unavailable." },
+    retry:         { es: "Reintentar", en: "Retry" },
+    disclaimer:    {
+      es: "La información presentada es exclusivamente de carácter informativo y no constituye asesoramiento financiero, fiscal ni de inversión. Se recomienda discreción y consulta con un profesional habilitado antes de tomar decisiones.",
+      en: "The information presented is for informational purposes only and does not constitute financial, tax, or investment advice. Discretion is advised; consult a qualified professional before making any decisions.",
+    },
+
+    // EconomicIndicators
+    indicatorsTitle:    { es: "🇦🇷 Indicadores Económicos de Argentina", en: "🇦🇷 Argentine Economic Indicators" },
+    indicatorsSubtitle: {
+      es: "Principales índices macroeconómicos en tiempo real — fuente oficial ArgentinaDatos.",
+      en: "Key macroeconomic indices in real time — official source ArgentinaDatos.",
+    },
+    indicatorsLoading:  { es: "🔄 Cargando indicadores económicos...", en: "🔄 Loading economic indicators..." },
+    indRiesgoPais:  { es: "Riesgo País",          en: "Country Risk" },
+    indInflacion:   { es: "Inflación Mensual",    en: "Monthly Inflation" },
+    indInteranual:  { es: "Inflación Interanual", en: "Year-over-Year Inflation" },
+    indUva:         { es: "Índice UVA",           en: "UVA Index" },
+    indPlazoFijo:   { es: "Plazo Fijo (TNA prom.)", en: "Fixed Term (avg. APR)" },
+    indMejorPlazo:  { es: "Mejor Plazo Fijo (TNA)", en: "Best Fixed Term (APR)" },
+    indHintRiesgo:  { es: "Puntos básicos sobre bonos de EE.UU.", en: "Basis points over US bonds" },
+    indHintMensual: { es: "Variación del IPC del último mes",     en: "Last month's CPI change" },
+    indHintAnual:   { es: "Acumulado de los últimos 12 meses",    en: "Accumulated over the last 12 months" },
+    indHintUva:     { es: "Unidad de Valor Adquisitivo (ARS)",    en: "Purchasing Value Unit (ARS)" },
+    indHintTna:     { es: "Promedio de bancos para clientes",     en: "Bank average for clients" },
+    indErr:         { es: "No se pudieron cargar algunos indicadores.", en: "Some indicators could not be loaded." },
+    indicatorsSource: {
+      es: "Datos provenientes de APIs públicas. Para información oficial consulte:",
+      en: "Data sourced from public APIs. For official information, consult:",
+    },
+  },
+};
