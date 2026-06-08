@@ -35,7 +35,10 @@ public class MarketRefreshBackgroundService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Market prefetch cycle failed");
+                // Never let a failure (including a logging-provider failure) escape and
+                // stop the host: a BackgroundService exception tears down the whole app.
+                try { _logger.LogError(ex, "Market prefetch cycle failed"); }
+                catch { /* swallow: the loop must keep running */ }
             }
 
             try

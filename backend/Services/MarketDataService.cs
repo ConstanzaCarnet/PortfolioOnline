@@ -81,7 +81,7 @@ public class MarketDataService
             if (!forceRefresh && _cache.TryGetValue(KeyDolar, out cached) && cached is not null)
                 return cached;
 
-            var fetched = await SafeAsync(() => FetchDolarAsync(ct), "DolarAPI");
+            var fetched = await SafeAsync(() => FetchDolarAsync(ct), "DolarAPI", ct);
             if (fetched is { Count: > 0 })
             {
                 _cache.Set(KeyDolar, fetched);
@@ -132,13 +132,25 @@ public class MarketDataService
     {
         var existing = _cache.TryGetValue(KeyDefaults, out IReadOnlyList<MarketAssetDto>? old) ? old : null;
 
-        var cryptoTask = SafeAsync(() => FetchCryptoAsync(ct), "CoinGecko defaults");
-        var stockTask  = SafeAsync(() => FetchStocksAsync(ct), "Yahoo defaults");
+        var cryptoTask = SafeAsync(() => FetchCryptoAsync(ct), "CoinGecko defaults", ct);
+        var stockTask  = SafeAsync(() => FetchStocksAsync(ct), "Yahoo defaults", ct);
         await Task.WhenAll(cryptoTask, stockTask);
 
-        // Per provider: use fresh data, else fall back to the last cached subset.
+        // Crypto is one batched call: all-or-nothing, so fall back to the cached subset.
         var crypto = cryptoTask.Result ?? existing?.Where(a => a.Type == "crypto").ToList() ?? [];
-        var stocks = stockTask.Result  ?? existing?.Where(a => a.Type == "stock").ToList()  ?? [];
+
+        // Stocks fan out one call per symbol, so a single flaky symbol must not drop
+        // the whole row. Merge per symbol: prefer the fresh value, else keep the last
+        // cached one — preserving the configured order.
+        var freshStocks  = stockTask.Result ?? [];
+        var cachedStocks = existing?.Where(a => a.Type == "stock").ToList() ?? [];
+        var stocks = _stocks
+            .Select(s => s.ToUpperInvariant())
+            .Select(sym => freshStocks.FirstOrDefault(a => a.Symbol == sym)
+                        ?? cachedStocks.FirstOrDefault(a => a.Symbol == sym))
+            .Where(a => a is not null)
+            .Select(a => a!)
+            .ToList();
 
         return [.. crypto, .. stocks];
     }
@@ -169,11 +181,18 @@ public class MarketDataService
 
     private async Task<MarketAssetDto?> FetchStockAsync(string symbol, CancellationToken ct)
     {
-        var sym  = symbol.ToUpperInvariant();
-        var url  = $"https://query1.finance.yahoo.com/v8/finance/chart/{Uri.EscapeDataString(sym)}?interval=1d&range=1d";
-        var resp = await GetJsonSafeAsync<YahooChartResponse>(url, $"Yahoo {sym}", ct);
-        var meta = resp?.Chart?.Result?.FirstOrDefault()?.Meta;
-        return meta is null ? null : MapStock(meta);
+        var sym = symbol.ToUpperInvariant();
+        var url = $"https://query1.finance.yahoo.com/v8/finance/chart/{Uri.EscapeDataString(sym)}?interval=1d&range=1d";
+
+        // Yahoo occasionally rejects a symbol under parallel load; one retry keeps a
+        // transient miss from leaving a gap in the watchlist on a cold cache.
+        for (var attempt = 0; attempt < 2; attempt++)
+        {
+            var resp = await GetJsonSafeAsync<YahooChartResponse>(url, $"Yahoo {sym}", ct);
+            var meta = resp?.Chart?.Result?.FirstOrDefault()?.Meta;
+            if (meta is not null) return MapStock(meta);
+        }
+        return null;
     }
 
     private static MarketAssetDto MapCrypto(CoinGeckoMarketEntry c)
@@ -233,11 +252,12 @@ public class MarketDataService
     {
         var prev = _cache.TryGetValue(KeyIndicators, out EconomicIndicatorsDto? cached) ? cached : null;
 
-        var riesgoTask     = GetJsonSafeAsync<ArgDataPoint>($"{ArgBase}/indices/riesgo-pais/ultimo", "riesgo-pais", ct);
-        var inflacionTask  = GetJsonSafeAsync<ArgDataPoint[]>($"{ArgBase}/indices/inflacion", "inflacion", ct);
-        var interanualTask = GetJsonSafeAsync<ArgDataPoint[]>($"{ArgBase}/indices/inflacionInteranual", "interanual", ct);
-        var uvaTask        = GetJsonSafeAsync<ArgDataPoint[]>($"{ArgBase}/indices/uva", "uva", ct);
-        var plazoTask      = GetJsonSafeAsync<ArgPlazoFijoEntry[]>($"{ArgBase}/tasas/plazoFijo", "plazoFijo", ct);
+        const string arg = "argentinadatos";
+        var riesgoTask     = GetJsonSafeAsync<ArgDataPoint>($"{ArgBase}/indices/riesgo-pais/ultimo", "riesgo-pais", ct, arg);
+        var inflacionTask  = GetJsonSafeAsync<ArgDataPoint[]>($"{ArgBase}/indices/inflacion", "inflacion", ct, arg);
+        var interanualTask = GetJsonSafeAsync<ArgDataPoint[]>($"{ArgBase}/indices/inflacionInteranual", "interanual", ct, arg);
+        var uvaTask        = GetJsonSafeAsync<ArgDataPoint[]>($"{ArgBase}/indices/uva", "uva", ct, arg);
+        var plazoTask      = GetJsonSafeAsync<ArgPlazoFijoEntry[]>($"{ArgBase}/tasas/plazoFijo", "plazoFijo", ct, arg);
 
         await Task.WhenAll(riesgoTask, inflacionTask, interanualTask, uvaTask, plazoTask);
 
@@ -276,12 +296,19 @@ public class MarketDataService
 
     // Like SafeAsync but for nullable JSON shapes that don't satisfy the `class`
     // constraint (ArgentinaDatos, Yahoo chart). Failures are logged, not surfaced.
-    private async Task<T?> GetJsonSafeAsync<T>(string url, string label, CancellationToken ct)
+    private async Task<T?> GetJsonSafeAsync<T>(string url, string label, CancellationToken ct, string clientName = "proxy")
     {
         try
         {
-            var client = _factory.CreateClient("proxy");
+            var client = _factory.CreateClient(clientName);
             return await client.GetFromJsonAsync<T>(url, _deser, ct);
+        }
+        // Host is shutting down: let it propagate so the prefetch loop exits cleanly,
+        // instead of being logged as an upstream failure. A plain HTTP timeout (the
+        // client's own token) leaves ct unsignalled and falls through to the catch below.
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -294,11 +321,16 @@ public class MarketDataService
 
     // Runs an upstream fetch; on any failure logs it server-side and returns null
     // so the caller can fall back to cached data. Errors never reach the client.
-    private async Task<T?> SafeAsync<T>(Func<Task<T>> func, string label) where T : class
+    private async Task<T?> SafeAsync<T>(Func<Task<T>> func, string label, CancellationToken ct) where T : class
     {
         try
         {
             return await func();
+        }
+        // Shutdown cancellation propagates (clean loop exit); a real timeout is logged below.
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {

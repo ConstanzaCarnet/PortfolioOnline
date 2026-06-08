@@ -4,11 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
+Prerequisites: Node 18+ and .NET SDK 8 (the latter only for the optional backend).
+
 ```bash
 npm run dev       # start Vite dev server at http://localhost:5173
 npm run build     # production build
 npm run preview   # preview production build
-npm run lint      # ESLint (js/jsx files)
+npm run lint      # eslint . (whole tree, config-driven)
 ```
 
 There are no tests. The project has no test runner configured.
@@ -60,6 +62,9 @@ The Finance Dashboard UI lives in its own nested folder `src/components/FinanceC
 ASP.NET Core 8 minimal API. `Program.cs` defines all endpoints inline — there are no controllers. Responsibilities:
 - Owns all third-party data (DolarAPI, CoinGecko, Yahoo Finance, ArgentinaDatos): proxies it, **filters it down to flat DTOs** (`backend/Models/MarketModels.cs` — only the fields the UI renders; raw upstream JSON never leaves the server) and **computes derived fields** (volatility, alert level).
 - **Owns the cache and prefetch.** `Services/MarketDataService.cs` (singleton) holds the `IMemoryCache`, dedupes concurrent fetches per dataset (`SemaphoreSlim`) and retains the last known real values if a refresh fails. `Services/MarketRefreshBackgroundService.cs` (`BackgroundService`) warms every dataset on startup and re-fetches every `Market:RefreshMinutes` (default 20). The "Actualizar" button forces a refresh via `/api/market/refresh`.
+  - **Fallback granularity differs by provider.** Crypto is one batched CoinGecko call (all-or-nothing: keep the whole cached crypto subset on failure). Stocks fan out one Yahoo call per symbol, so the merge is per-symbol — prefer the fresh value, else the last cached one, preserving the configured order — and each symbol gets one retry, so a single flaky symbol never blanks a watchlist row.
+  - **Two named `HttpClient`s.** `"proxy"` (10s timeout) for CoinGecko/Yahoo/DolarAPI; `"argentinadatos"` (30s) because that API returns slow, large historical series — safe only because it's always served from the warm cache, never on a user's path.
+  - **Shutdown vs. timeout cancellation.** Fetch helpers rethrow `OperationCanceledException` *only* when the host's `ct` is signalled (clean prefetch-loop exit); a plain HTTP timeout leaves `ct` unsignalled and is logged as an upstream failure. The background loop also wraps its own logging in try/catch — a `BackgroundService` exception would tear down the whole app.
 - **Never leaks errors.** Upstream failures are logged with `ILogger` and translated to a generic `{ "error": "service_unavailable" }` 500 — no exception message or stack ever reaches the client. `app.UseExceptionHandler` is the global backstop for anything unhandled.
 - Fixed-window rate limiting per IP (default: 60 req/min); CORS restricted to `AllowedOrigins`.
 - Serves portfolio content (projects + experiences) from `PortfolioDataStore.cs`.
@@ -75,6 +80,14 @@ Backend endpoints:
 | `GET /api/currency/dolar` | DolarAPI (cached) |
 | `GET /api/indicators/economic` | ArgentinaDatos (parsed/aggregated + cached) |
 | `GET /health` | status check |
+
+Backend configuration (read from `appsettings.json` / environment in `Program.cs`, all with defaults):
+| Key | Default | Effect |
+|---|---|---|
+| `Market:RefreshMinutes` | 20 | Background prefetch/refresh interval |
+| `RateLimit:PermitLimit` | 60 | Requests allowed per window, per IP |
+| `RateLimit:WindowMinutes` | 1 | Rate-limit window length |
+| `AllowedOrigins` | `["http://localhost:5173"]` | CORS allowlist (set to the deployed frontend URL in prod) |
 
 ## Deployment
 

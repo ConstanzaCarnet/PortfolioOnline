@@ -16,6 +16,16 @@ builder.Services.AddHttpClient("proxy", client =>
     client.DefaultRequestHeaders.Add("User-Agent", "PortfolioAPI/1.0");
 });
 
+// ArgentinaDatos serves full historical series (UVA alone is ~200 KB) with slow,
+// highly variable response times that routinely brush the 10s mark. It gets its
+// own client with a generous timeout — safe because this data is cached and warmed
+// by the background prefetch, never on a user's critical path.
+builder.Services.AddHttpClient("argentinadatos", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+    client.DefaultRequestHeaders.Add("User-Agent", "PortfolioAPI/1.0");
+});
+
 builder.Services.AddMemoryCache();
 
 // Market data: cache, dedup and prefetch all live behind this singleton.
