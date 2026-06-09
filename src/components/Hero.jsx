@@ -110,13 +110,14 @@ function Hero() {
         </div>
 
         {/* COLUMNA DERECHA: FOTO DE PERFIL */}
-        {/* Cuando tengas la foto: reemplazá el div.profile-placeholder por:
-            <img src="/tu-foto.jpg" alt="Constanza Carnet" className="profile-img" /> */}
         <div className="hero-right-content">
           <div className="profile-img-wrapper">
-            <div className="profile-placeholder">
-              <span className="profile-initials">CC</span>
-            </div>
+            <img
+              src="/profile.jpg"
+              alt="Constanza Carnet"
+              className="profile-img"
+              loading="eager"
+            />
           </div>
         </div>
       </div>
