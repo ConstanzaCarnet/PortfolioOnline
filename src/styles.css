@@ -1526,10 +1526,11 @@ body {
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* Numeric cells in mono */
+/* Numeric/timestamp cells in mono: Precio (4), Actualizado (5), Var. Diaria (6), Volatilidad (8) */
 .market-table td:nth-child(4),
 .market-table td:nth-child(5),
-.market-table td:nth-child(7) {
+.market-table td:nth-child(6),
+.market-table td:nth-child(8) {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.88rem;
 }

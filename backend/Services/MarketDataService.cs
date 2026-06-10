@@ -205,7 +205,8 @@ public class MarketDataService
         return new MarketAssetDto(
             "crypto", "coingecko", c.Symbol.ToUpperInvariant(), c.Name,
             price, decimal.Round(change, 2), decimal.Round(vol, 2),
-            Alert(vol, highAt: 8, moderateAt: 4));
+            Alert(vol, highAt: 8, moderateAt: 4),
+            c.LastUpdated); // CoinGecko already returns an ISO-8601 string.
     }
 
     private static MarketAssetDto MapStock(YahooChartMeta m)
@@ -216,10 +217,15 @@ public class MarketDataService
         var prevClose = m.ChartPreviousClose ?? price;
         var change    = prevClose > 0 ? (price - prevClose) / prevClose * 100 : 0;
         var vol       = low > 0 ? (high - low) / low * 100 : 0;
+        // Yahoo's regularMarketTime is Unix seconds; normalize to an ISO-8601 string.
+        var updated = m.RegularMarketTime is { } secs
+            ? DateTimeOffset.FromUnixTimeSeconds(secs).ToString("o")
+            : null;
         return new MarketAssetDto(
             "stock", "yahoo", m.Symbol, m.ShortName ?? m.LongName ?? m.Symbol,
             price, decimal.Round(change, 2), decimal.Round(vol, 2),
-            Alert(vol, highAt: 5, moderateAt: 2));
+            Alert(vol, highAt: 5, moderateAt: 2),
+            updated);
     }
 
     private static string Alert(decimal volatility, decimal highAt, decimal moderateAt) =>

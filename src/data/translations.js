@@ -27,16 +27,16 @@ export const t = {
   about: {
     title: { es: "Sobre mí", en: "About me" },
     p1: {
-      es: "Soy desarrolladora autodidacta con foco en backend, aunque con capacidad y experiencia en frontend también. A lo largo de los últimos años aprendí de forma independiente tecnologías como <strong>C#, .NET Core, PHP, Laravel, React y Docker</strong>, profundizando en conceptos como programación orientada a objetos, patrones de diseño, arquitectura de microservicios y comunicación por eventos.",
-      en: "I'm a self-taught developer focused on backend, with frontend skills as well. Over the past few years I independently learned technologies like <strong>C#, .NET Core, PHP, Laravel, React, and Docker</strong>, deepening my understanding of object-oriented programming, design patterns, microservices architecture, and event-driven communication.",
+      es: "Soy desarrolladora con foco en backend, y con capacidad y experiencia en frontend. A lo largo de los últimos años aprendí tecnologías como <strong>C#, .NET Core, PHP, Laravel, React y Docker</strong>, y profundicé en programación orientada a objetos, patrones de diseño, arquitectura de microservicios y comunicación por eventos.",
+      en: "I'm a developer focused on backend, with solid frontend skills and experience as well. Over the past few years I learned technologies like <strong>C#, .NET Core, PHP, Laravel, React, and Docker</strong>, and deepened my knowledge of object-oriented programming, design patterns, microservices architecture, and event-driven communication.",
     },
     p2: {
-      es: "Actualmente estoy desarrollando un <strong>sistema de trading modular</strong> con ASP.NET Core, RabbitMQ, PostgreSQL y Docker — un proyecto personal que me permitió aplicar arquitectura distribuida en un contexto real y complejo.",
-      en: "I'm currently developing a <strong>modular trading system</strong> with ASP.NET Core, RabbitMQ, PostgreSQL, and Docker — a personal project that allowed me to apply distributed architecture in a real and complex context.",
+      es: "Actualmente estoy desarrollando un <strong>sistema de trading modular</strong> con ASP.NET Core, RabbitMQ, PostgreSQL y Docker.",
+      en: "I'm currently building a <strong>modular trading system</strong> with ASP.NET Core, RabbitMQ, PostgreSQL, and Docker.",
     },
     p3: {
-      es: "No tengo experiencia laboral formal en IT todavía, pero sí tengo código, criterio técnico y muchas ganas de trabajar en equipo. Estoy abierta tanto a <strong>relación de dependencia</strong> como a <strong>proyectos freelance</strong>, presencial o remoto desde Córdoba, Argentina.",
-      en: "I don't have formal IT work experience yet, but I do have real code, technical judgment, and a strong drive to work in a team. I'm open to both <strong>full-time employment</strong> and <strong>freelance projects</strong>, on-site or remote from Córdoba, Argentina.",
+      es: "Tengo criterio técnico y herramientas para el uso eficiente de la IA, y muchas ganas de trabajar en equipo. Estoy abierta a <strong>relación de dependencia</strong> y a <strong>proyectos freelance</strong>, presenciales o remotos desde Córdoba, Argentina.",
+      en: "I have technical judgment and the tools to use AI efficiently, plus a strong drive to work in a team. I'm open to both <strong>full-time employment</strong> and <strong>freelance projects</strong>, on-site or remote from Córdoba, Argentina.",
     },
   },
   skills: {
@@ -115,7 +115,8 @@ export const t = {
     colSource:      { es: "Origen",               en: "Source" },
     colSymbol:      { es: "Símbolo",              en: "Symbol" },
     colName:        { es: "Nombre",               en: "Name" },
-    colPrice:       { es: "Precio Act.",          en: "Curr. Price" },
+    colPrice:       { es: "Precio",               en: "Price" },
+    colUpdated:     { es: "Actualizado",          en: "Updated" },
     colChange:      { es: "Var. Diaria",          en: "Daily Change" },
     colTrend:       { es: "Tendencia",            en: "Trend" },
     colVolatility:  { es: "Volatilidad",          en: "Volatility" },
@@ -124,7 +125,6 @@ export const t = {
       es: "* Alerta de Riesgo: volatilidad calculada sobre el rango de precios en las últimas 24 h — Normal (baja oscilación) · Moderada · Alta (riesgo de movimiento brusco).",
       en: "* Risk Alert: volatility based on the 24h price range — Normal (low swing) · Moderate · High (risk of sharp price movement).",
     },
-    colAction:      { es: "Acción",               en: "Action" },
     badgeStock:     { es: "Bolsa",                en: "Stock" },
     badgeCrypto:    { es: "Cripto",               en: "Crypto" },
     generalAsset:   { es: "Activo General",       en: "General Asset" },

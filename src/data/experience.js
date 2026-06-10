@@ -1,7 +1,7 @@
 export const experiences = [
   {
     role:    { es: "Desarrollo de Proyectos Independientes", en: "Independent Project Development" },
-    company: { es: "Autodidacta",                            en: "Self-taught" },
+    company: { es: "Desarrolladora IT Freelance",            en: "Freelance IT Developer" },
     period:  { es: "2021 - Presente",                        en: "2021 - Present" },
     description: {
       es: "Desarrollo continuo de proyectos personales para aplicar y profundizar conocimientos técnicos. Incluye un sistema de trading modular con arquitectura de microservicios, una app de gestión comercial integrada con AFIP, y este portfolio con dashboard financiero en tiempo real. Aprendizaje activo de patrones de diseño, POO, Docker y arquitectura distribuida.",

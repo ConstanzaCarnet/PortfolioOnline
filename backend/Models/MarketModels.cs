@@ -19,7 +19,8 @@ internal record CoinGeckoMarketEntry(
     [property: JsonPropertyName("current_price")] decimal? CurrentPrice,
     [property: JsonPropertyName("high_24h")] decimal? High24h,
     [property: JsonPropertyName("low_24h")] decimal? Low24h,
-    [property: JsonPropertyName("price_change_percentage_24h")] decimal? PriceChange24h
+    [property: JsonPropertyName("price_change_percentage_24h")] decimal? PriceChange24h,
+    [property: JsonPropertyName("last_updated")] string? LastUpdated
 );
 
 // Yahoo Finance v8 chart endpoint. Used instead of the v7 quote API, which now
@@ -32,7 +33,8 @@ internal record YahooChartMeta(
     [property: JsonPropertyName("regularMarketPrice")] decimal? RegularMarketPrice,
     [property: JsonPropertyName("regularMarketDayHigh")] decimal? RegularMarketDayHigh,
     [property: JsonPropertyName("regularMarketDayLow")] decimal? RegularMarketDayLow,
-    [property: JsonPropertyName("chartPreviousClose")] decimal? ChartPreviousClose
+    [property: JsonPropertyName("chartPreviousClose")] decimal? ChartPreviousClose,
+    [property: JsonPropertyName("regularMarketTime")] long? RegularMarketTime
 );
 
 internal record YahooChartResult(
@@ -79,7 +81,10 @@ public record MarketAssetDto(
     [property: JsonPropertyName("currentPrice")] decimal CurrentPrice,
     [property: JsonPropertyName("dailyChange")] decimal DailyChange,
     [property: JsonPropertyName("volatility")] decimal Volatility,
-    [property: JsonPropertyName("alertLevel")] string AlertLevel
+    [property: JsonPropertyName("alertLevel")] string AlertLevel,
+    // ISO-8601 timestamp of the upstream quote (CoinGecko `last_updated` /
+    // Yahoo `regularMarketTime`). Null if the provider didn't supply it.
+    [property: JsonPropertyName("lastUpdated")] string? LastUpdated
 );
 
 public record IndicatorValueDto(

@@ -6,6 +6,16 @@ import { t } from "../../data/translations";
 const fmtPrice = (n) =>
   Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+// Upstream quote timestamp (ISO-8601 from the backend) → short local date/time.
+const fmtDate = (iso, language) => {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleString(language === "es" ? "es-AR" : "en-US", {
+    day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
+  });
+};
+
 export const MarketDemo = () => {
   const [assets, setAssets]         = useState([]);              // all default assets from backend
   const [selected, setSelected]     = useState(() => new Set()); // symbols currently shown in the table
@@ -126,11 +136,11 @@ export const MarketDemo = () => {
               <th>{f.colSymbol[language]}</th>
               <th>{f.colName[language]}</th>
               <th>{f.colPrice[language]}</th>
+              <th>{f.colUpdated[language]}</th>
               <th>{f.colChange[language]}</th>
               <th>{f.colTrend[language]}</th>
               <th>{f.colVolatility[language]}</th>
               <th>{f.colRisk[language]} *</th>
-              <th className="text-center">{f.colAction[language]}</th>
             </tr>
           </thead>
           <tbody>
@@ -149,6 +159,7 @@ export const MarketDemo = () => {
                   </td>
                   <td className="text-muted">{asset.name || f.generalAsset[language]}</td>
                   <td className="font-semibold">${fmtPrice(asset.currentPrice)} USD</td>
+                  <td className="text-muted">{fmtDate(asset.lastUpdated, language)}</td>
                   <td className="font-semibold" style={{ color: up ? "#10b981" : "#ef4444" }}>
                     {up ? `+${asset.dailyChange}` : asset.dailyChange}%
                   </td>
@@ -181,15 +192,6 @@ export const MarketDemo = () => {
                     >
                       {translateAlertLevel(asset.alertLevel)}
                     </span>
-                  </td>
-                  <td className="text-center">
-                    <button
-                      onClick={() => toggle(asset.symbol)}
-                      className="remove-asset-btn"
-                      title={`${language === "es" ? "Quitar" : "Remove"} ${asset.name}`}
-                    >
-                      &times;
-                    </button>
                   </td>
                 </tr>
               );

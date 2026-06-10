@@ -59,7 +59,7 @@ export const skillCategories = [
   {
     title: { es: "Idiomas", en: "Languages" },
     skills: [
-      { name: { es: "Inglés (Intermedio-Avanzado)", en: "English (Upper-Intermediate)" }, badge: "B2" },
+      { name: { es: "Inglés (Conversacional Intermedio)", en: "English (Intermediate Conversational)" } },
       { name: { es: "Español (Nativo)",            en: "Spanish (Native)" },             badge: "LM" },
     ],
   },
