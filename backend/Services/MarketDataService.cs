@@ -21,6 +21,13 @@ public class MarketDataService
 
     private readonly string[] _cryptos;
     private readonly string[] _stocks;
+
+    // Throttle for the user-forced refresh ("Actualizar"): if the defaults were
+    // refreshed more recently than this, a forced refresh serves the cache instead
+    // of hitting CoinGecko/Yahoo again. Guards against button-spam exceeding the
+    // providers' per-minute limits. Read/written only under _defaultsLock.
+    private readonly TimeSpan _forcedRefreshCooldown;
+    private DateTimeOffset _defaultsRefreshedAt = DateTimeOffset.MinValue;
     private static readonly HashSet<string> TiposInteres =
         new() { "oficial", "bolsa", "mep", "tarjeta", "cripto" };
 
@@ -48,6 +55,8 @@ public class MarketDataService
                    ?? ["bitcoin", "ethereum", "solana"];
         _stocks  = config.GetSection("Market:DefaultStocks").Get<string[]>()
                    ?? ["AAPL", "MSFT", "GOOGL"];
+        _forcedRefreshCooldown = TimeSpan.FromSeconds(
+            config.GetValue("Market:ForcedRefreshCooldownSeconds", 30));
     }
 
     // ── Public API ───────────────────────────────────────────────────────────
@@ -60,11 +69,25 @@ public class MarketDataService
         await _defaultsLock.WaitAsync(ct);
         try
         {
-            if (!forceRefresh && _cache.TryGetValue(KeyDefaults, out cached) && cached is not null)
-                return cached;
+            var haveCache = _cache.TryGetValue(KeyDefaults, out cached) && cached is not null;
+
+            // Non-forced: serve the warm cache populated by the background prefetch.
+            if (!forceRefresh && haveCache)
+                return cached!;
+
+            // Forced ("Actualizar"): if we refreshed very recently, serve the cache
+            // instead of hitting the upstream APIs again. The 20-min background loop
+            // is never throttled — its interval is far longer than this cooldown.
+            if (forceRefresh && haveCache &&
+                DateTimeOffset.UtcNow - _defaultsRefreshedAt < _forcedRefreshCooldown)
+                return cached!;
 
             var merged = await FetchDefaultsAsync(ct);
-            if (merged.Count > 0) _cache.Set(KeyDefaults, merged);
+            if (merged.Count > 0)
+            {
+                _cache.Set(KeyDefaults, merged);
+                _defaultsRefreshedAt = DateTimeOffset.UtcNow;
+            }
             return merged;
         }
         finally { _defaultsLock.Release(); }
