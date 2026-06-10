@@ -189,8 +189,14 @@ VITE_API_URL=http://localhost:5000   # backend ASP.NET Core (en prod, la URL de 
 
 ## Deployment
 
-- **Frontend** → Vercel. `vercel.json` configura el build de Vite (`outputDirectory: dist`) y sirve `/cv.pdf` inline como `application/pdf`.
-- **Backend** → Render. La variable `VITE_API_URL` del frontend debe apuntar a esa URL. Las llamadas de finanzas usan un timeout amplio para tolerar el *cold start* del plan gratuito.
+En producción:
+
+- **Frontend** → [Vercel](https://constanza-carnet.vercel.app). `vercel.json` configura el build de Vite (`outputDirectory: dist`) y sirve `/cv.pdf` inline como `application/pdf`. Es estático: no se duerme y no necesita keep-alive.
+- **Backend** → Render (Docker, plan free). `backend/Dockerfile` publica la imagen .NET 8; el servicio escucha el puerto que Render inyecta vía la env var `PORT` (validada en `Program.cs`). El frontend apunta a esa URL con `VITE_API_URL`, y las llamadas de finanzas usan timeout amplio (60s) para tolerar el *cold start*.
+- **CORS** → `AllowedOrigins` en `backend/appsettings.json` lista el dominio de Vercel; al cambiar el dominio hay que actualizarlo y redeployar el backend.
+- **Keep-alive** → el plan free de Render duerme el servicio tras ~15 min de inactividad. Un monitor externo (UptimeRobot) pinguea `GET /health` cada 5 min para mantenerlo despierto. `/health` es el único endpoint sin rate-limiting, justamente para este uso.
+
+> Nota: el plan free de Render da 750 h/mes de cómputo compartidas entre todos los servicios free de la cuenta — alcanza para mantener **un** backend siempre despierto. Para más proyectos conviene Vercel/serverless (sin ese límite) y reservar el keep-alive para el/los backend(s) con estado.
 
 ---
 
