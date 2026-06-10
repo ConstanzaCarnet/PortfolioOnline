@@ -7,6 +7,14 @@ using PortfolioApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Render (and most PaaS) inject the port to listen on via the PORT env var.
+// Sanitize it: only bind when it parses to a valid TCP port (1-65535), so a
+// malformed/hostile value can never be interpolated into the bind URL. When it's
+// absent or invalid (local dev) Kestrel keeps its launchSettings/appsettings defaults.
+var portEnv = Environment.GetEnvironmentVariable("PORT");
+if (int.TryParse(portEnv, out var port) && port is > 0 and <= 65535)
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
 

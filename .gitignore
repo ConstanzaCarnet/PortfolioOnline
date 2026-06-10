@@ -20,6 +20,9 @@ backend/obj/
 .env.local
 .env.*.local
 
+# Claude Code project instructions (local only)
+CLAUDE.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
