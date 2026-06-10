@@ -472,11 +472,68 @@ body {
   margin-bottom: 0;
 }
 
-/* --- PROVIDER BADGE --- */
+/* --- CURRENCY CONVERTER --- */
+.currency-converter-card {
+  background: #1e293b;
+  padding: 24px;
+  border-radius: 12px;
+  color: #fff;
+}
+
 .currency-converter-card input::placeholder {
   color: #475569;
   font-size: 0.88rem;
 }
+
+/* Tarjetas de cotización: 4 columnas en escritorio */
+.currency-rate-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+/* Bloque de resultado del cálculo */
+.currency-result {
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 16px 20px;
+  border-left: 3px solid #10b981;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.currency-result-meta {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .currency-converter-card {
+    padding: 18px 16px;
+  }
+  /* Evita que 4 tarjetas se aplasten en una fila en el teléfono */
+  .currency-rate-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* El resultado se apila para que el monto no choque con la cotización */
+  .currency-result {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .currency-result-meta {
+    text-align: left;
+  }
+}
+
+@media (max-width: 400px) {
+  .currency-rate-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- PROVIDER BADGE --- */
 
 .provider-badge {
   display: inline-flex;

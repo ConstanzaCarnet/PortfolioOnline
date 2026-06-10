@@ -66,7 +66,7 @@ export const CurrencyConverter = () => {
   }
 
   return (
-    <div style={{ background: "#1e293b", padding: "24px", borderRadius: "12px", color: "#fff" }}>
+    <div className="currency-converter-card">
       <h3 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: 700 }}>
         {f.converterTitle[language]}
       </h3>
@@ -75,12 +75,7 @@ export const CurrencyConverter = () => {
       </p>
 
       {/* ── Rate cards ──────────────────────────────────────────────────── */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        gap: "10px",
-        marginBottom: "22px",
-      }}>
+      <div className="currency-rate-cards">
         {sortedRates.map((r) => {
           const active = selectedCasa === r.casa;
           return (
@@ -173,11 +168,7 @@ export const CurrencyConverter = () => {
         </div>
 
         {/* Result */}
-        <div style={{
-          background: "#0f172a", borderRadius: "8px", padding: "16px 20px",
-          borderLeft: "3px solid #10b981",
-          display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px",
-        }}>
+        <div className="currency-result">
           <div>
             <div style={{ fontSize: "0.72rem", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>
               {f.estimatedTotal[language]}
@@ -186,7 +177,7 @@ export const CurrencyConverter = () => {
               {direction === "USD_TO_ARS" ? `ARS $${calculateResult()}` : `USD $${calculateResult()}`}
             </div>
           </div>
-          <div style={{ fontSize: "0.73rem", color: "#475569", textAlign: "right", flexShrink: 0 }}>
+          <div className="currency-result-meta" style={{ fontSize: "0.73rem", color: "#475569", flexShrink: 0 }}>
             <span style={{ color: "#94a3b8" }}>
               {f.rate[language]} 1 USD = ${direction === "USD_TO_ARS" ? currentRate.compra : currentRate.venta} ARS
             </span>
