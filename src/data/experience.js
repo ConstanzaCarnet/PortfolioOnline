@@ -1,11 +1,11 @@
 export const experiences = [
   {
-    role:    { es: "Desarrollo de Proyectos Independientes", en: "Independent Project Development" },
-    company: { es: "Desarrolladora IT Freelance",            en: "Freelance IT Developer" },
-    period:  { es: "2021 - Presente",                        en: "2021 - Present" },
+    role:    { es: "Desarrollo IT",              en: "IT Development" },
+    company: { es: "Desarrolladora Freelance",   en: "Freelance Developer" },
+    period:  { es: "2021 - Presente",            en: "2021 - Present" },
     description: {
-      es: "Desarrollo continuo de proyectos personales para aplicar y profundizar conocimientos técnicos. Incluye un sistema de trading modular con arquitectura de microservicios, una app de gestión comercial integrada con AFIP, y este portfolio con dashboard financiero en tiempo real. Aprendizaje activo de patrones de diseño, POO, Docker y arquitectura distribuida.",
-      en: "Continuous development of personal projects to apply and deepen technical knowledge. Includes a modular trading system with microservices architecture, a commercial management app integrated with AFIP, and this portfolio with a real-time financial dashboard. Active learning of design patterns, OOP, Docker, and distributed architecture.",
+      es: "Desarrollo continuo de proyectos para aplicar y profundizar conocimientos técnicos. Incluye un sistema de trading modular con arquitectura de microservicios, una app de gestión comercial integrada con AFIP, y este portfolio con dashboard financiero en tiempo real. Aprendizaje activo de patrones de diseño, POO, Docker y arquitectura distribuida.",
+      en: "Continuous development of projects to apply and deepen technical knowledge. Includes a modular trading system with microservices architecture, a commercial management app integrated with AFIP, and this portfolio with a real-time financial dashboard. Active learning of design patterns, OOP, Docker, and distributed architecture.",
     },
     skills: "C# · .NET Core · PHP · Laravel · React · Docker · RabbitMQ · PostgreSQL · MySQL · Microservicios",
   },
