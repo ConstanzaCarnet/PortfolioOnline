@@ -194,7 +194,7 @@ public class MarketDataService
 
     private async Task<List<MarketAssetDto>> FetchCryptoAsync(CancellationToken ct)
     {
-        var client = _factory.CreateClient("proxy");
+        var client = _factory.CreateClient("coingecko");
         var ids    = string.Join(",", _cryptos.Select(c => c.ToLowerInvariant()));
         var url    = $"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={Uri.EscapeDataString(ids)}";
 

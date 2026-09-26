@@ -24,6 +24,20 @@ builder.Services.AddHttpClient("proxy", client =>
     client.DefaultRequestHeaders.Add("User-Agent", "PortfolioAPI/1.0");
 });
 
+// CoinGecko's public API rate-limits per IP, and Render's free instances share
+// outbound IPs — so the first call after a cold start is often a 429. A free
+// "Demo" key (CoinGecko:ApiKey, set as the CoinGecko__ApiKey env var in Render,
+// never committed) gives us our own quota. Without it we fall back to the
+// keyless public API, exactly as before.
+var coinGeckoKey = builder.Configuration["CoinGecko:ApiKey"];
+builder.Services.AddHttpClient("coingecko", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+    client.DefaultRequestHeaders.Add("User-Agent", "PortfolioAPI/1.0");
+    if (!string.IsNullOrWhiteSpace(coinGeckoKey))
+        client.DefaultRequestHeaders.Add("x-cg-demo-api-key", coinGeckoKey.Trim());
+});
+
 // Yahoo Finance throttles (429) clients that don't look like a browser, so its
 // chart calls go out with a regular browser User-Agent instead of our API's one.
 builder.Services.AddHttpClient("yahoo", client =>
