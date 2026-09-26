@@ -108,4 +108,9 @@ public record EconomicIndicatorsDto(
     public bool HasAny =>
         RiesgoPais is not null || Inflacion is not null || Interanual is not null ||
         Uva is not null || PlazoFijo is not null || MejorPlazo is not null;
+
+    [JsonIgnore]
+    public bool IsComplete =>
+        RiesgoPais is not null && Inflacion is not null && Interanual is not null &&
+        Uva is not null && PlazoFijo is not null && MejorPlazo is not null;
 }

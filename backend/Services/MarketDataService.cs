@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
@@ -41,6 +42,11 @@ public class MarketDataService
     private readonly SemaphoreSlim _indicatorsLock  = new(1, 1);
 
     private const string ArgBase = "https://api.argentinadatos.com/v1/finanzas";
+
+    // Waits between attempts when an upstream answers 429 or a transient 5xx.
+    // Render's free instances share outbound IPs, so CoinGecko/Yahoo often throttle
+    // the first burst after a cold start; retrying instantly just hits the limit again.
+    private static readonly TimeSpan[] RetryBackoff = [TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5)];
 
     public MarketDataService(
         IHttpClientFactory factory,
@@ -140,13 +146,21 @@ public class MarketDataService
         finally { _indicatorsLock.Release(); }
     }
 
-    /// <summary>Refreshes every dataset; used by the background prefetch loop.</summary>
-    public async Task RefreshAllAsync(CancellationToken ct)
+    /// <summary>
+    /// Refreshes every dataset; used by the background prefetch loop. Returns
+    /// whether every dataset is fully populated, so the loop can retry sooner
+    /// when a cold start left gaps (e.g. an upstream 429 right after spin-up).
+    /// </summary>
+    public async Task<bool> RefreshAllAsync(CancellationToken ct)
     {
         var defaults   = GetDefaultsAsync(true, ct);
         var dolar      = GetDolarAsync(true, ct);
         var indicators = GetIndicatorsAsync(true, ct);
         await Task.WhenAll(defaults, dolar, indicators);
+
+        return defaults.Result.Count == _cryptos.Length + _stocks.Length
+            && dolar.Result.Count > 0
+            && indicators.Result is { IsComplete: true };
     }
 
     // ── Market defaults (the "two GETs": one batched call per provider) ────────
@@ -184,7 +198,7 @@ public class MarketDataService
         var ids    = string.Join(",", _cryptos.Select(c => c.ToLowerInvariant()));
         var url    = $"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={Uri.EscapeDataString(ids)}";
 
-        var raw = await client.GetFromJsonAsync<CoinGeckoMarketEntry[]>(url, _deser, ct);
+        var raw = await GetJsonWithRetryAsync<CoinGeckoMarketEntry[]>(client, url, ct);
         if (raw is null || raw.Length == 0)
             throw new InvalidOperationException("Empty CoinGecko response");
 
@@ -207,15 +221,11 @@ public class MarketDataService
         var sym = symbol.ToUpperInvariant();
         var url = $"https://query1.finance.yahoo.com/v8/finance/chart/{Uri.EscapeDataString(sym)}?interval=1d&range=1d";
 
-        // Yahoo occasionally rejects a symbol under parallel load; one retry keeps a
-        // transient miss from leaving a gap in the watchlist on a cold cache.
-        for (var attempt = 0; attempt < 2; attempt++)
-        {
-            var resp = await GetJsonSafeAsync<YahooChartResponse>(url, $"Yahoo {sym}", ct);
-            var meta = resp?.Chart?.Result?.FirstOrDefault()?.Meta;
-            if (meta is not null) return MapStock(meta);
-        }
-        return null;
+        // Yahoo occasionally rejects a symbol under parallel load (429); the backoff
+        // in GetJsonSafeAsync keeps a transient miss from leaving a gap in the watchlist.
+        var resp = await GetJsonSafeAsync<YahooChartResponse>(url, $"Yahoo {sym}", ct, "yahoo");
+        var meta = resp?.Chart?.Result?.FirstOrDefault()?.Meta;
+        return meta is not null ? MapStock(meta) : null;
     }
 
     private static MarketAssetDto MapCrypto(CoinGeckoMarketEntry c)
@@ -259,8 +269,8 @@ public class MarketDataService
     private async Task<List<DolarRateDto>> FetchDolarAsync(CancellationToken ct)
     {
         var client = _factory.CreateClient("proxy");
-        var raw    = await client.GetFromJsonAsync<DolarApiEntry[]>(
-                         "https://dolarapi.com/v1/dolares", _deser, ct);
+        var raw    = await GetJsonWithRetryAsync<DolarApiEntry[]>(
+                         client, "https://dolarapi.com/v1/dolares", ct);
         if (raw is null)
             throw new InvalidOperationException("Empty DolarAPI response");
 
@@ -330,7 +340,7 @@ public class MarketDataService
         try
         {
             var client = _factory.CreateClient(clientName);
-            return await client.GetFromJsonAsync<T>(url, _deser, ct);
+            return await GetJsonWithRetryAsync<T>(client, url, ct);
         }
         // Host is shutting down: let it propagate so the prefetch loop exits cleanly,
         // instead of being logged as an upstream failure. A plain HTTP timeout (the
@@ -347,6 +357,27 @@ public class MarketDataService
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
+
+    // GET + deserialize, retrying with RetryBackoff on 429 / 5xx. Any other failure,
+    // or the last retryable one, is thrown for the caller's Safe* wrapper to log.
+    // Task.Delay honours ct, so a shutdown still cancels promptly mid-backoff.
+    private async Task<T?> GetJsonWithRetryAsync<T>(HttpClient client, string url, CancellationToken ct)
+    {
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                return await client.GetFromJsonAsync<T>(url, _deser, ct);
+            }
+            catch (HttpRequestException ex) when (IsRetryable(ex.StatusCode) && attempt < RetryBackoff.Length)
+            {
+                await Task.Delay(RetryBackoff[attempt], ct);
+            }
+        }
+    }
+
+    private static bool IsRetryable(HttpStatusCode? status) =>
+        status is HttpStatusCode.TooManyRequests || (int?)status >= 500;
 
     // Runs an upstream fetch; on any failure logs it server-side and returns null
     // so the caller can fall back to cached data. Errors never reach the client.

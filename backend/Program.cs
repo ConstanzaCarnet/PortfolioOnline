@@ -24,6 +24,16 @@ builder.Services.AddHttpClient("proxy", client =>
     client.DefaultRequestHeaders.Add("User-Agent", "PortfolioAPI/1.0");
 });
 
+// Yahoo Finance throttles (429) clients that don't look like a browser, so its
+// chart calls go out with a regular browser User-Agent instead of our API's one.
+builder.Services.AddHttpClient("yahoo", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+    client.DefaultRequestHeaders.Add("User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
 // ArgentinaDatos serves full historical series (UVA alone is ~200 KB) with slow,
 // highly variable response times that routinely brush the 10s mark. It gets its
 // own client with a generous timeout — safe because this data is cached and warmed
