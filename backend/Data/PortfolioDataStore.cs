@@ -51,6 +51,50 @@ public static class PortfolioDataStore
             ),
             Stack: "PHP • Laravel • MySQL • SDK AFIP",
             Link: "https://github.com/ConstanzaCarnet/CurnocopiaApp.git"
+        ),
+        new(
+            Title: "Interview English Coach",
+            Featured: false,
+            Description: new(
+                Es: "Coach de inglés con IA para entrevistas IT. La API en .NET arma los prompts y consume Gemini del lado del servidor, así la API key nunca llega al navegador.",
+                En: "AI-powered English coach for IT job interviews. The .NET API builds the prompts and calls Gemini server-side, so the API key never reaches the browser."
+            ),
+            Highlights: new(
+                Es: [
+                    "Defensa contra inyección de prompts (sanitización de texto externo), rate limiting por IP, CORS cerrado, CSP y cabeceras de seguridad",
+                    "105 tests (69 en xUnit) sobre sanitización, validación y errores del modelo",
+                    "Docker Compose con nginx como proxy"
+                ],
+                En: [
+                    "Prompt-injection defense (external text sanitization), per-IP rate limiting, locked-down CORS, CSP, and security headers",
+                    "105 tests (69 in xUnit) covering sanitization, validation, and model errors",
+                    "Docker Compose with nginx as a reverse proxy"
+                ]
+            ),
+            Stack: ".NET 9 Minimal API • React • Gemini API • xUnit • Docker • nginx",
+            Link: "https://github.com/ConstanzaCarnet/interview-english-coach"
+        ),
+        new(
+            Title: "Sales Management",
+            Featured: false,
+            Description: new(
+                Es: "API REST en .NET para ventas, productos y usuarios, organizada en capas con patrón Repository.",
+                En: ".NET REST API for sales, products, and users, built in layers with the Repository pattern."
+            ),
+            Highlights: new(
+                Es: [
+                    "Arquitectura en capas con patrón Repository",
+                    "Consultas parametrizadas contra SQL Server",
+                    "Credenciales por variables de entorno y documentación con Swagger"
+                ],
+                En: [
+                    "Layered architecture with the Repository pattern",
+                    "Parameterized queries against SQL Server",
+                    "Credentials via environment variables and Swagger documentation"
+                ]
+            ),
+            Stack: "C# • ASP.NET Core • SQL Server • ADO.NET • Swagger",
+            Link: "https://github.com/ConstanzaCarnet/dotnet-rest-api"
         )
     ];
 

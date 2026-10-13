@@ -43,4 +43,48 @@ export const projects = [
     stack: "PHP • Laravel • MySQL • SDK AFIP",
     link: "https://github.com/ConstanzaCarnet/CurnocopiaApp.git",
   },
+  {
+    title: "Interview English Coach",
+    featured: false,
+    description: {
+      es: "Coach de inglés con IA para entrevistas IT. La API en .NET arma los prompts y consume Gemini del lado del servidor, así la API key nunca llega al navegador.",
+      en: "AI-powered English coach for IT job interviews. The .NET API builds the prompts and calls Gemini server-side, so the API key never reaches the browser.",
+    },
+    highlights: {
+      es: [
+        "Defensa contra inyección de prompts (sanitización de texto externo), rate limiting por IP, CORS cerrado, CSP y cabeceras de seguridad",
+        "105 tests (69 en xUnit) sobre sanitización, validación y errores del modelo",
+        "Docker Compose con nginx como proxy",
+      ],
+      en: [
+        "Prompt-injection defense (external text sanitization), per-IP rate limiting, locked-down CORS, CSP, and security headers",
+        "105 tests (69 in xUnit) covering sanitization, validation, and model errors",
+        "Docker Compose with nginx as a reverse proxy",
+      ],
+    },
+    stack: ".NET 9 Minimal API • React • Gemini API • xUnit • Docker • nginx",
+    link: "https://github.com/ConstanzaCarnet/interview-english-coach",
+  },
+  {
+    title: "Sales Management",
+    featured: false,
+    description: {
+      es: "API REST en .NET para ventas, productos y usuarios, organizada en capas con patrón Repository.",
+      en: ".NET REST API for sales, products, and users, built in layers with the Repository pattern.",
+    },
+    highlights: {
+      es: [
+        "Arquitectura en capas con patrón Repository",
+        "Consultas parametrizadas contra SQL Server",
+        "Credenciales por variables de entorno y documentación con Swagger",
+      ],
+      en: [
+        "Layered architecture with the Repository pattern",
+        "Parameterized queries against SQL Server",
+        "Credentials via environment variables and Swagger documentation",
+      ],
+    },
+    stack: "C# • ASP.NET Core • SQL Server • ADO.NET • Swagger",
+    link: "https://github.com/ConstanzaCarnet/dotnet-rest-api",
+  },
 ];

@@ -13,7 +13,6 @@ function About() {
       <div className="about-card">
         <p dangerouslySetInnerHTML={{ __html: a.p1[language] }} />
         <p dangerouslySetInnerHTML={{ __html: a.p2[language] }} />
-        <p dangerouslySetInnerHTML={{ __html: a.p3[language] }} />
       </div>
     </section>
   );

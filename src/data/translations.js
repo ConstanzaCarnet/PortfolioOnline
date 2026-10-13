@@ -31,10 +31,6 @@ export const t = {
       en: "I'm a developer focused on backend, with solid frontend skills and experience as well. Over the past few years I learned technologies like <strong>C#, .NET Core, PHP, Laravel, React, and Docker</strong>, and deepened my knowledge of object-oriented programming, design patterns, microservices architecture, and event-driven communication.",
     },
     p2: {
-      es: "Actualmente estoy desarrollando un <strong>sistema de trading modular</strong> con ASP.NET Core, RabbitMQ, PostgreSQL y Docker.",
-      en: "I'm currently building a <strong>modular trading system</strong> with ASP.NET Core, RabbitMQ, PostgreSQL, and Docker.",
-    },
-    p3: {
       es: "Tengo criterio técnico y herramientas para el uso eficiente de la IA, y muchas ganas de trabajar en equipo. Estoy abierta a <strong>relación de dependencia</strong> y a <strong>proyectos freelance</strong>, presenciales o remotos desde Córdoba, Argentina.",
       en: "I have technical judgment and the tools to use AI efficiently, plus a strong drive to work in a team. I'm open to both <strong>full-time employment</strong> and <strong>freelance projects</strong>, on-site or remote from Córdoba, Argentina.",
     },
